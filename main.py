@@ -2,6 +2,8 @@ import os
 import sys
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
+
 
 def main():
     
@@ -12,12 +14,16 @@ def main():
     client = genai.Client(api_key=api_key)
 
     try:
-        content = client.models.generate_content(model ="gemini-2.0-flash-001", contents = sys.argv[1])
-        print(content.text)
+        messages = [
+            types.Content(role="user", parts=[types.Part(text=sys.argv[1])]),
+        ]
+        content = client.models.generate_content(model ="gemini-2.0-flash-001", contents = messages)
 
-        print(f"Prompt tokens: {content.usage_metadata.prompt_token_count}")
-        print(f"Response tokens: {content.usage_metadata.candidates_token_count}")
-        print(sys.argv[1])
+        if sys.argv[2] == "--verbose":
+            print(f"User prompt: {content.text}")
+            print(f"Prompt tokens: {content.usage_metadata.prompt_token_count}")
+            print(f"Response tokens: {content.usage_metadata.candidates_token_count}")
+        
 
     except Exception as e:
         print("No Prompt Given.")
