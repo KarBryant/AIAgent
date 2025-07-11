@@ -12,7 +12,7 @@ def main():
     api_key = os.environ.get("GEMINI_API_KEY")
 
     client = genai.Client(api_key=api_key)
-
+  
     try:
         messages = [
             types.Content(role="user", parts=[types.Part(text=sys.argv[1])]),
